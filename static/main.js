@@ -165,6 +165,7 @@ list.forEach((li) => {
 
 
 let numberOfoperations = undefined;
+let executionTime = undefined;
 
 async function sendData(choice) {
     try {
@@ -185,6 +186,7 @@ async function sendData(choice) {
         let Data = await response.json();
         if (Data.status === "success") {
             numberOfoperations = Data.op;
+            executionTime = Data.time;
             return Data.path;
         }
         else {
@@ -202,6 +204,7 @@ let loading = document.querySelector(".ans .loading");
 let error = document.querySelector(".ans .error");
 let container = document.querySelector(".ans .container");
 let operations = document.querySelector(".ans .opeartions p span");
+let time = document.querySelector(".ans .time p span");
 
 
 solve.addEventListener("click", async (e) => {
@@ -210,6 +213,7 @@ solve.addEventListener("click", async (e) => {
     solve.disabled = true;
     solve.innerText = "Solving...";
     operations.parentElement.parentElement.style.display = "none";
+    time.parentElement.parentElement.style.display = "none";
     if (loading) loading.style.display = "block";
 
     if (error) {
@@ -232,11 +236,14 @@ solve.addEventListener("click", async (e) => {
         solve.innerText = "Solve";
         error.classList.add("active");
         operations.parentElement.parentElement.style.display = "none";
+        time.parentElement.parentElement.style.display = "none";
         return;
     }
 
     operations.parentElement.parentElement.style.display = "block";
+    time.parentElement.parentElement.style.display = "block";
 
+    time.innerText = executionTime;
     operations.innerText = numberOfoperations;
 
     for (let i of arr) {

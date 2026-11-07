@@ -1,5 +1,6 @@
 from flask import Flask,request, render_template,jsonify
 from collections import deque
+import time
 
 app = Flask(__name__)
 
@@ -57,6 +58,7 @@ def bfs(curr, goal):
 
 @app.route("/solve",methods=['POST'])
 def solve():
+    start_time = time.time()
     data=request.get_json()
     puzzle=[str(x) for x in data["intial"]]
     goal=[str(x) for x in data["goal"]]
@@ -67,16 +69,19 @@ def solve():
     elif choice == "DLS":
         ans=DLS(puzzle,goal,set(),15)
 
+    execution_time = round((time.time() - start_time)*1000,2) # in milliseconds
+
     if ans:
         return jsonify({
             "status":"success",
             "path":ans,
-            "op":len(ans)-1
+            "op":len(ans)-1,
+            "time":execution_time
         })
     else:
         return jsonify({
             "status":"fail",
-            "messege":"NO SOL"
+            "message":"NO SOL"
         })
 
 

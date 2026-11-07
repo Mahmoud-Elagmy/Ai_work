@@ -584,7 +584,6 @@ header p {
     -webkit-backdrop-filter: blur(0px);
     opacity: 0;
     z-index: -1;
-    border-radius: 5px;
     transition: all 0.4s ease;
 }
 
@@ -655,11 +654,13 @@ header p {
     }
 }
 
-.opeartions {
+.opeartions,
+.time {
     display: none;
 }
 
-.opeartions p {
+.opeartions p,
+.time p {
     font-size: 1.2rem;
     letter-spacing: 2px;
     line-height: 2;
@@ -703,5 +704,10 @@ header p {
         justify-content: center;
         align-items: center;
         width: 100%;
+    }
+
+    .opeartions p,
+    .time p {
+        font-size: 1rem;
     }
 }
