@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="static/master.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>{{ title }} <span>AI</span></h1>
+            <p>Search Algorithms Visualizer</p>
+            <div class="btns">
+                <a href="#search" class="btn">Start</a>
+                <a href="#algorithm" class="btn">View Algorithm <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="description">
+        <div class="container">
+            <div class="left">
+                <h2>01 / Description</h2>
+                <p>
+                    The 8-Puzzle is a 3×3 grid with 8 numbered tiles and an empty space ('0'). The goal is to reach a
+                    target layout by
+                    sliding adjacent tiles. Enter your initial and goal states, then click <strong>Solve</strong> the
+                    system evaluates state
+                    transitions to generate the step-by-step solution path.</p>
+            </div>
+            <div class="right">
+                <div class="start">
+                    <p>initial state</p>
+                </div>
+                <div class="arrow">
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>></span>
+                </div>
+                <div class="goal">
+                    <p>goal state</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search">
+        <h2 id="search">02 / Search</h2>
+        <h3>*you must put 0 in a tile </h3>
+        <div class="container">
+            <div class="left">
+                <h4>Intial State</h4>
+                <div class="grid">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                </div>
+                <div class="check">
+                    <span class="progress" data-value="0"></span>
+                    <span><i class="fa-solid fa-circle-check"></i></span>
+                </div>
+                <button type="submit" class="left clear">Clear</button>
+            </div>
+            <i class="bi bi-check-circle-fill"></i>
+            <div class="right">
+                <h4>Goal State</h4>
+                <div class="grid">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                    <input type="number" min="0" max="99" class="tile-input" value="" placeholder="">
+                </div>
+                <div class="check">
+                    <span class="progress" data-value="0"></span>
+                    <span><i class="fa-solid fa-circle-check"></i></span>
+                </div>
+                <button type="submit" class="right clear">Clear</button>
+            </div>
+        </div>
+        <ul>
+            <li class="active">BFS</li>
+            <li>DLS</li>
+        </ul>
+        <button type="submit" class="solve" disabled>Solve</button>
+        <div class="ans">
+            <div class="opeartions">
+                <p>Number of operations: <span>0</span></p>
+            </div>
+            <div class="error">
+                <p>This case is not solvable</p>
+            </div>
+            <div class="loading">
+                <i class="fa-solid fa-circle"></i>
+                <i class="fa-solid fa-circle"></i>
+                <i class="fa-solid fa-circle"></i>
+            </div>
+            <div class="container">
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+
+</html>
