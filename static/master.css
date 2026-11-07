@@ -431,6 +431,13 @@ header p {
 }
 
 @media (max-width: 767px) {
+
+    header,
+    .description,
+    .search {
+        width: calc(100% - 20px);
+    }
+
     .description .container {
         flex-direction: column;
     }
