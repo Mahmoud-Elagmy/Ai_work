@@ -1,36 +1,3 @@
-let start = document.querySelector(".start");
-let arrow = document.querySelector(".arrow");
-let goal = document.querySelector(".goal");
-
-start.style.cursor = "pointer";
-
-let times = [];
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            start.style.cursor = "context-menu";
-            times.forEach((time) => {
-                clearTimeout(time);
-            })
-            times = [];
-            start.classList.add("active");
-            Array.from(arrow.children).forEach((child, i) => {
-                let time = setTimeout(() => {
-                    child.classList.add("active");
-                }, i * 250);
-                times.push(time);
-            })
-            setTimeout(() => {
-                goal.classList.add("active");
-            }, 1800)
-        }
-    })
-}, {
-    threshold: 0.5
-});
-
-observer.observe(start);
 
 let intialTiles = document.querySelectorAll(".left .tile-input");
 let goalTiles = document.querySelectorAll(".right .tile-input");
@@ -50,7 +17,6 @@ function checktiles(list) {
     }
     // A valid 8-puzzle board contains each value from 0 through 99 exactly once.
     return list.every((value) => /^(?:0|[1-9]|[1-9][0-9])$/.test(value));
-    new Set(list).size === 9;
 }
 
 
@@ -163,11 +129,41 @@ list.forEach((li) => {
     })
 })
 
+let limit = document.querySelector(".limit");
+let plus = document.querySelector(".plus");
+let minus = document.querySelector(".minus");
+let limitIn = document.querySelector(".limit input");
+
+plus.addEventListener("click", () => {
+    if (limitIn.value < 25) {
+        limitIn.value = parseInt(limitIn.value) + 1;
+    }
+})
+minus.addEventListener("click", () => {
+    if (limitIn.value > 0) {
+        limitIn.value = parseInt(limitIn.value) - 1;
+    }
+})
+
+let lis = document.querySelectorAll(".search ul li");
+
+lis.forEach((li) => {
+    li.addEventListener("click", () => {
+        if (li.innerText === "DLS") {
+            limit.classList.remove("hidden");
+        }
+        else {
+            limit.classList.add("hidden");
+        }
+    })
+})
+
 
 let numberOfoperations = undefined;
 let executionTime = undefined;
+let directions = undefined;
 
-async function sendData(choice) {
+async function sendData(choice, depthLimit) {
     try {
         const response = await fetch('/solve', {
             method: "POST",
@@ -177,7 +173,8 @@ async function sendData(choice) {
             body: JSON.stringify({
                 intial: intailvals,
                 goal: goalvals,
-                choice: choice
+                choice: choice,
+                limit: isNaN(depthLimit) ? 15 : depthLimit
             })
         });
         if (!response.ok) {
@@ -187,6 +184,7 @@ async function sendData(choice) {
         if (Data.status === "success") {
             numberOfoperations = Data.op;
             executionTime = Data.time;
+            directions = Data.dirs;
             return Data.path;
         }
         else {
@@ -210,6 +208,7 @@ let time = document.querySelector(".ans .time p span");
 solve.addEventListener("click", async (e) => {
     e.preventDefault();
     let choice = document.querySelector(".search ul li.active").innerText.trim();
+    let depthLimit = parseInt(limitIn.value);
     solve.disabled = true;
     solve.innerText = "Solving...";
     operations.parentElement.parentElement.style.display = "none";
@@ -225,7 +224,7 @@ solve.addEventListener("click", async (e) => {
     }
 
     let [arr] = await Promise.all([
-        sendData(choice),
+        sendData(choice, depthLimit),
         new Promise((resolve) => setTimeout(resolve, 1000))
     ]);
 
@@ -261,6 +260,25 @@ solve.addEventListener("click", async (e) => {
                 <input type="text" class="tile-input" value="${i[8]}" disabled>
             </div>
         `;
+        if (arr.indexOf(i) < arr.length - 1) {
+            div.innerHTML += `
+            <p class="step-direction">${directions[arr.indexOf(i)]}</p>
+            `;
+        }
+        else {
+            div.innerHTML += `
+            <p class="goal-state">Goal State</p>
+            `;
+        }
+        let tiles = div.querySelectorAll(".tile-input");
+        tiles.forEach((tile, i) => {
+            if (tile.value == 0) {
+                tile.classList.add("tile-empty");
+            }
+            else if (tile.value == arr[arr.length - 1][i]) {
+                tile.classList.add("tile-correct");
+            }
+        });
         container.appendChild(div);
     }
 

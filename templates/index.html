@@ -13,46 +13,26 @@
     <header>
         <div class="container">
             <h1>{{ title }} <span>AI</span></h1>
-            <p>Search Algorithms Visualizer</p>
-            <div class="btns">
-                <a href="#search" class="btn">Start</a>
-                <a href="#algorithm" class="btn">View Algorithm <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-            </div>
+            <nav>
+                <ul>
+                    <li><a href="#search">Search</a></li>
+                    <li><a href="#working">How it works</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
-    <div class="description">
+    <div class="landing">
         <div class="container">
-            <div class="left">
-                <h2>01 / Description</h2>
-                <p>
-                    The 8-Puzzle is a 3×3 grid with 8 numbered tiles and an empty space ('0'). The goal is to reach a
-                    target layout by
-                    sliding adjacent tiles. Enter your initial and goal states, then click <strong>Solve</strong> the
-                    system evaluates state
-                    transitions to generate the step-by-step solution path.</p>
+            <div class="content">
+                <p>Solve 8-puzzle using AI Search Algorithms</p>
+                <p>Compare BFS, DLS, A* ... and see the magic</p>
+                <button type="button" class="start">Start Solving<i class="fa-solid fa-arrow-down"></i></button>
             </div>
-            <div class="right">
-                <div class="start">
-                    <p>initial state</p>
-                </div>
-                <div class="arrow">
-                    <span>-</span>
-                    <span>-</span>
-                    <span>-</span>
-                    <span>-</span>
-                    <span>-</span>
-                    <span>-</span>
-                    <span>></span>
-                </div>
-                <div class="goal">
-                    <p>goal state</p>
-                </div>
-            </div>
+            <img src="/static/hero-boards-removebg-preview.webp">
         </div>
     </div>
-    <div class="search">
-        <h2 id="search">02 / Search</h2>
+    <div class="search" id="search">
+        <h2>Solve 8-puzzle</h2>
         <h3>*you must put 0 in a tile </h3>
         <div class="container">
             <div class="left">
@@ -95,11 +75,24 @@
                 <button type="submit" class="right clear">Clear</button>
             </div>
         </div>
-        <ul>
-            <li class="active">BFS</li>
-            <li>DLS</li>
-        </ul>
-        <button type="submit" class="solve" disabled>Solve</button>
+        <div class="options">
+            <div class="algo">
+                <h6>ALGORITHMS</h6>
+                <ul>
+                    <li class="active">BFS</li>
+                    <li>DLS</li>
+                    <li>A*</li>
+                </ul>
+            </div>
+            <div class="limit hidden">
+                <h6>DEPTH LIMIT(DLS)</h6>
+                <button type="button" class="minus"><i class="fa-solid fa-minus"></i></button>
+                <input type="number" min="0" max="25" value="0">
+                <button type="button" class="plus"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <span>Solvable<i class="fa-solid fa-circle-check"></i></span>
+            <button type="submit" class="solve" disabled>Solve</button>
+        </div>
         <div class="ans">
             <div class="opeartions">
                 <p>Number of operations: <span>0</span></p>
