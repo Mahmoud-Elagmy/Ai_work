@@ -610,8 +610,9 @@ header nav a:hover::before {
     align-items: center;
     background: linear-gradient(135deg, var(--accent-deep), var(--surface));
     border-radius: var(--radius-md);
-    margin-top: 30px;
+    margin: 30px auto 30px auto;
     gap: 20px;
+    width: fit-content;
 }
 
 .search .options .algo {
@@ -820,12 +821,44 @@ header nav a:hover::before {
     font-size: 1.2rem;
 }
 
+.ans .container .right .compare {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    width: 100%;
+}
+
+.ans .container .right .compare .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.ans .container .right .compare .row>*:first-child {
+    text-align: left;
+}
+
+.ans .container .right .compare .row>*:nth-child(2) {
+    text-align: center;
+}
+
+.ans .container .right .compare .row>*:last-child {
+    text-align: right;
+}
+
 @media (max-width: 767px) {
     .ans .container {
         display: flex;
         flex-direction: column;
     }
 
+    .ans .container .right h3 {
+        font-size: 1rem;
+    }
 }
 
 .ans .tile-input.tile-empty {
@@ -894,19 +927,6 @@ header nav a:hover::before {
     }
 }
 
-.opertions,
-.time {
-    display: none;
-}
-
-.opertions p,
-.time p {
-    font-size: 1.2rem;
-    letter-spacing: 2px;
-    line-height: 2;
-    color: var(--text-muted);
-}
-
 
 @media (max-width: 767px) {
     .search .container {
@@ -944,10 +964,5 @@ header nav a:hover::before {
         justify-content: center;
         align-items: center;
         width: 100%;
-    }
-
-    .opertions p,
-    .time p {
-        font-size: 1rem;
     }
 }

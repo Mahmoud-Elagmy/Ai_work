@@ -68,29 +68,22 @@ def A_star(curr, goal):
 def Greedy(curr, goal):
     h = heuristic(curr, goal)
     pq = [(h, curr, [curr], [])]
-
     vis = set()
-
     while pq:
         h, node, path, dirs = heapq.heappop(pq)
-
         if node == goal:
             return path, dirs
-
         if tuple(node) in vis:
             continue
-
         vis.add(tuple(node))
-
         for state, dir in states(node):
             if tuple(state) not in vis:
                 h_new = heuristic(state, goal)
                 heapq.heappush(pq, (h_new, state, path + [state], dirs + [dir]))
-
     return None
 
 
-def DLS(curr, goal, vis, limit, path=[], dirs=[]):
+def DLS(curr, goal, vis, limit=10, path=[], dirs=[]):
     if curr == goal:
         return path, dirs
     if limit <= 0:
@@ -122,33 +115,55 @@ def bfs(curr, goal):
 
 @app.route("/solve", methods=["POST"])
 def solve():
-    start_time = time.time()
     data = request.get_json()
     puzzle = [str(x) for x in data["intial"]]
     goal = [str(x) for x in data["goal"]]
     choice = data["choice"]
-    limit = data["limit"]
+    limit = int(data["limit"])
 
-    if choice == "BFS":
-        ans = bfs(puzzle, goal)
-    elif choice == "DLS":
-        ans = DLS(puzzle, goal, set(), limit)
-    elif choice == "A*":
-        ans = A_star(puzzle, goal)
-    elif choice == "Greedy":
-        ans = Greedy(puzzle, goal)
+    t1 = time.perf_counter()
+    res_astar = A_star(puzzle, goal)
+    execution_time1 = round((time.perf_counter() - t1) * 1000, 3)
 
-    execution_time = round((time.time() - start_time) * 1000, 2)  # in milliseconds
+    t2 = time.perf_counter()
+    res_greedy = Greedy(puzzle, goal)
+    execution_time2 = round((time.perf_counter() - t2) * 1000, 3)
 
-    if ans:
-        path, dirs = ans
+    t3 = time.perf_counter()
+    res_dls = DLS(puzzle, goal, set(), limit, [puzzle], [])
+    execution_time3 = round((time.perf_counter() - t3) * 1000, 3)
+
+    t4 = time.perf_counter()
+    res_bfs = bfs(puzzle, goal)
+    execution_time4 = round((time.perf_counter() - t4) * 1000, 3)
+
+    ans = {
+        "BFS": res_bfs,
+        "Greedy": res_greedy,
+        "A*": res_astar,
+        "DLS": res_dls,
+    }
+
+    if ans[choice] is not None:
+        path, dirs = ans[choice]
         return jsonify(
             {
                 "status": "success",
                 "path": path,
                 "dirs": dirs,
                 "op": len(path) - 1,
-                "time": execution_time,
+                "steps": {
+                    "BFS": len(res_bfs[0])  if res_bfs else "-",
+                    "Greedy": len(res_greedy[0])  if res_greedy else "-",
+                    "A*": len(res_astar[0])  if res_astar else "-",
+                    "DLS": len(res_dls[0])  if res_dls else "-",
+                },
+                "execution_time": {
+                    "BFS": execution_time4,
+                    "Greedy": execution_time2,
+                    "A*": execution_time1,
+                    "DLS": execution_time3,
+                },
             }
         )
     else:

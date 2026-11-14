@@ -1,4 +1,7 @@
-
+let startBtn = document.querySelector(".start");
+startBtn.addEventListener("click", () => {
+    window.scrollTo(0, 500);
+});
 let intialTiles = document.querySelectorAll(".left .tile-input");
 let goalTiles = document.querySelectorAll(".right .tile-input");
 
@@ -159,8 +162,8 @@ lis.forEach((li) => {
 })
 
 
-let numberOfoperations = undefined;
-let executionTime = undefined;
+let allSteps = undefined;
+let allTimes = undefined;
 let directions = undefined;
 
 async function sendData(choice, depthLimit) {
@@ -183,8 +186,10 @@ async function sendData(choice, depthLimit) {
         let Data = await response.json();
         if (Data.status === "success") {
             numberOfoperations = Data.op;
-            executionTime = Data.time;
+            executionTime = Data.execution_time[choice] + " ms";
             directions = Data.dirs;
+            allTimes = Data.execution_time;
+            allSteps = Data.steps;
             return Data.path;
         }
         else {
@@ -200,8 +205,6 @@ async function sendData(choice, depthLimit) {
 let ans = document.querySelector(".ans");
 let loading = document.querySelector(".ans .loading");
 let container = document.querySelector(".ans .container");
-let operations = document.querySelector(".ans .opertions p span");
-let time = document.querySelector(".ans .time p span");
 let solvable = document.querySelector(".options span");
 
 let left = document.querySelector(".ans .left");
@@ -209,6 +212,7 @@ let steps = document.querySelector(".ans .left .data span:first-child");
 let moves = document.querySelector(".ans .left .data span:last-child");
 let right = document.querySelector(".ans .right");
 
+let rows = document.querySelectorAll(".row");
 
 solve.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -219,8 +223,6 @@ solve.addEventListener("click", async (e) => {
     solvable.classList.add("notsolved");
     left.style.display = "none";
     right.style.display = "none";
-    operations.parentElement.parentElement.style.display = "none";
-    time.parentElement.parentElement.style.display = "none";
     if (loading) loading.style.display = "block";
 
     if (ans && ans.children[0]) {
@@ -240,16 +242,9 @@ solve.addEventListener("click", async (e) => {
         solvable.classList.add("notsolved");
         left.style.display = "none";
         right.style.display = "none";
-        operations.parentElement.parentElement.style.display = "none";
-        time.parentElement.parentElement.style.display = "none";
         return;
     }
 
-    operations.parentElement.parentElement.style.display = "block";
-    time.parentElement.parentElement.style.display = "block";
-
-    time.innerText = executionTime;
-    operations.innerText = numberOfoperations;
 
     solvable.classList.remove("notsolved");
     left.style.display = "flex";
@@ -318,6 +313,24 @@ solve.addEventListener("click", async (e) => {
         left.children[i].style.display = "none";
     }
     left.children[1].style.display = "flex";
+    for (let i = 1; i < rows.length; i++) {
+        let algoname = rows[i].children[0].innerText;
+        rows[i].children[1].innerHTML = allSteps[algoname];
+        if (allSteps[algoname] === "-") {
+            rows[i].children[2].innerText = "-";
+            continue;
+        }
+        rows[i].children[2].innerText = allTimes[algoname] + "ms";
+    }
+
+    let minTime = (Object.values(allTimes).reduce((a, b) => Math.min(a, b)));
+    let bestAlgo = Object.keys(allTimes).find((key) => allTimes[key] === minTime);
+
+    for (let r = 1; r < rows.length; r++) {
+        let algoName = rows[r].children[0].innerText.trim();
+        rows[r].children[0].style.color = (algoName === bestAlgo) ? "var(--accent-soft)" : "";
+    }
+
     solve.disabled = false;
     solve.innerText = "Solve";
 });
