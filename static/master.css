@@ -520,7 +520,7 @@ header nav a:hover::before {
     margin: 0;
 }
 
-.search h3 {
+.search>h3 {
     font-size: 1rem;
     letter-spacing: 2px;
     line-height: 2;
@@ -542,7 +542,8 @@ header nav a:hover::before {
     border-radius: var(--radius-md);
 }
 
-.search .grid {
+.search .grid,
+.ans .grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(60px, 90px));
     grid-template-rows: repeat(3, minmax(60px, 90px));
@@ -556,7 +557,10 @@ header nav a:hover::before {
     color: var(--text-muted);
 }
 
-.search .tile-input {
+.search .tile-input,
+.ans .tile-input {
+    width: 100%;
+    height: 100%;
     background-color: var(--tile-bg);
     border: 1px solid var(--tile-border);
     font-size: 2rem;
@@ -566,6 +570,29 @@ header nav a:hover::before {
     border-radius: var(--radius-xs);
 }
 
+@media (max-width: 767px) {
+
+    .search .grid,
+    .ans .grid {
+        grid-template-columns: repeat(3, minmax(40px, 60px));
+        grid-template-rows: repeat(3, minmax(40px, 60px));
+        gap: 10px;
+        margin: 20px auto;
+    }
+
+    .ans .tile-input {
+        font-size: 1.4rem;
+    }
+
+    .ans .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .ans .container .right {
+        align-items: center;
+    }
+}
 
 .search .clear {
     cursor: pointer;
@@ -602,8 +629,10 @@ header nav a:hover::before {
     color: var(--text-muted);
 }
 
+
 .search .limit.hidden {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
 }
 
 .search .limit {
@@ -643,6 +672,16 @@ header nav a:hover::before {
 
 .search .limit button i {
     font-size: 0.75rem;
+}
+
+.search .options span.notsolved {
+    color: var(--danger);
+    background-color: var(--danger-bg);
+    border: 2px solid var(--danger-border);
+}
+
+.search .options span.notsolved i {
+    color: var(--danger);
 }
 
 .search .options span {
@@ -718,18 +757,69 @@ header nav a:hover::before {
     }
 }
 
+.ans .step-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+}
 
-.ans {
-    border: none;
+.ans .step-item i {
+    font-size: 1.5rem;
+    color: var(--accent-soft);
+    cursor: pointer;
 }
 
 .ans .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 40px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
 }
+
+
+.ans .container .left {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ans .container .left .data {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.ans .container .left .data span {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.ans .container .left .data span:last-child {
+    color: var(--text-muted);
+    font-weight: normal;
+    border: 2px solid var(--surface-border);
+    padding: 5px 10px;
+    border-radius: var(--radius-pill);
+}
+
+
+.ans .container .right {
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 40px;
+    height: 100%;
+}
+
+.ans .container .right h3 {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
 
 .ans .tile-input.tile-empty {
     background-color: var(--tile-empty-bg);
@@ -797,12 +887,12 @@ header nav a:hover::before {
     }
 }
 
-.opeartions,
+.opertions,
 .time {
     display: none;
 }
 
-.opeartions p,
+.opertions p,
 .time p {
     font-size: 1.2rem;
     letter-spacing: 2px;
@@ -849,7 +939,7 @@ header nav a:hover::before {
         width: 100%;
     }
 
-    .opeartions p,
+    .opertions p,
     .time p {
         font-size: 1rem;
     }

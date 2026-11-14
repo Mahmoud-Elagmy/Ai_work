@@ -199,10 +199,15 @@ async function sendData(choice, depthLimit) {
 
 let ans = document.querySelector(".ans");
 let loading = document.querySelector(".ans .loading");
-let error = document.querySelector(".ans .error");
 let container = document.querySelector(".ans .container");
-let operations = document.querySelector(".ans .opeartions p span");
+let operations = document.querySelector(".ans .opertions p span");
 let time = document.querySelector(".ans .time p span");
+let solvable = document.querySelector(".options span");
+
+let left = document.querySelector(".ans .left");
+let steps = document.querySelector(".ans .left .data span:first-child");
+let moves = document.querySelector(".ans .left .data span:last-child");
+let right = document.querySelector(".ans .right");
 
 
 solve.addEventListener("click", async (e) => {
@@ -211,16 +216,15 @@ solve.addEventListener("click", async (e) => {
     let depthLimit = parseInt(limitIn.value);
     solve.disabled = true;
     solve.innerText = "Solving...";
+    solvable.classList.add("notsolved");
+    left.style.display = "none";
+    right.style.display = "none";
     operations.parentElement.parentElement.style.display = "none";
     time.parentElement.parentElement.style.display = "none";
     if (loading) loading.style.display = "block";
 
-    if (error) {
-        error.classList.remove("active");
-    }
-
     if (ans && ans.children[0]) {
-        container.innerHTML = "";
+        left.querySelectorAll(".step-item").forEach(el => el.remove());
     }
 
     let [arr] = await Promise.all([
@@ -233,7 +237,9 @@ solve.addEventListener("click", async (e) => {
     if (!arr || arr.length === 0) {
         solve.disabled = false;
         solve.innerText = "Solve";
-        error.classList.add("active");
+        solvable.classList.add("notsolved");
+        left.style.display = "none";
+        right.style.display = "none";
         operations.parentElement.parentElement.style.display = "none";
         time.parentElement.parentElement.style.display = "none";
         return;
@@ -245,31 +251,57 @@ solve.addEventListener("click", async (e) => {
     time.innerText = executionTime;
     operations.innerText = numberOfoperations;
 
+    solvable.classList.remove("notsolved");
+    left.style.display = "flex";
+    right.style.display = "flex";
+
+    steps.innerHTML = `Step 1 of ${arr.length}`;
+    moves.innerHTML = directions.length > 0 ? `Move: ${directions[0]}` : "Goal State";
+
     for (let i of arr) {
+        let idx = arr.indexOf(i);
         let div = document.createElement("div");
+        div.classList.add("step-item");
         div.innerHTML = `
+        <i class="fa-solid fa-arrow-left"></i>
         <div class="grid">
-                <input type="text" class="tile-input" value="${i[0]}" disabled>
-                <input type="text" class="tile-input" value="${i[1]}" disabled>
-                <input type="text" class="tile-input" value="${i[2]}" disabled>
-                <input type="text" class="tile-input" value="${i[3]}" disabled>
-                <input type="text" class="tile-input" value="${i[4]}" disabled>
-                <input type="text" class="tile-input" value="${i[5]}" disabled>
-                <input type="text" class="tile-input" value="${i[6]}" disabled>
-                <input type="text" class="tile-input" value="${i[7]}" disabled>
-                <input type="text" class="tile-input" value="${i[8]}" disabled>
-            </div>
+            <input type="text" class="tile-input" value="${i[0]}" disabled>
+            <input type="text" class="tile-input" value="${i[1]}" disabled>
+            <input type="text" class="tile-input" value="${i[2]}" disabled>
+            <input type="text" class="tile-input" value="${i[3]}" disabled>
+            <input type="text" class="tile-input" value="${i[4]}" disabled>
+            <input type="text" class="tile-input" value="${i[5]}" disabled>
+            <input type="text" class="tile-input" value="${i[6]}" disabled>
+            <input type="text" class="tile-input" value="${i[7]}" disabled>
+            <input type="text" class="tile-input" value="${i[8]}" disabled>
+        </div>
+        <i class="fa-solid fa-arrow-right"></i>
         `;
-        if (arr.indexOf(i) < arr.length - 1) {
-            div.innerHTML += `
-            <p class="step-direction">${directions[arr.indexOf(i)]}</p>
-            `;
-        }
-        else {
-            div.innerHTML += `
-            <p class="goal-state">Goal State</p>
-            `;
-        }
+
+        let prev = div.querySelector(".fa-arrow-left");
+        let next = div.querySelector(".fa-arrow-right");
+
+        if (idx === 0) prev.style.visibility = "hidden";
+        if (idx === arr.length - 1) next.style.visibility = "hidden";
+
+        prev.addEventListener("click", () => {
+            if (idx > 0) {
+                div.style.display = "none";
+                div.previousElementSibling.style.display = "flex";
+                steps.innerHTML = `Step ${idx} of ${arr.length}`;
+                moves.innerHTML = `Move: ${directions[idx - 1]}`;
+            }
+        });
+
+        next.addEventListener("click", () => {
+            if (idx < arr.length - 1) {
+                div.style.display = "none";
+                div.nextElementSibling.style.display = "flex";
+                steps.innerHTML = `Step ${idx + 2} of ${arr.length}`;
+                moves.innerHTML = idx + 1 < directions.length ? `Move: ${directions[idx + 1]}` : "Goal State";
+            }
+        });
+
         let tiles = div.querySelectorAll(".tile-input");
         tiles.forEach((tile, i) => {
             if (tile.value == 0) {
@@ -279,9 +311,13 @@ solve.addEventListener("click", async (e) => {
                 tile.classList.add("tile-correct");
             }
         });
-        container.appendChild(div);
+        left.appendChild(div);
     }
 
+    for (let i = 2; i < left.children.length; ++i) {
+        left.children[i].style.display = "none";
+    }
+    left.children[1].style.display = "flex";
     solve.disabled = false;
     solve.innerText = "Solve";
 });
