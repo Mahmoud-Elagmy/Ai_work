@@ -323,7 +323,8 @@ solve.addEventListener("click", async (e) => {
         rows[i].children[2].innerText = allTimes[algoname] + "ms";
     }
 
-    let minTime = (Object.values(allTimes).reduce((a, b) => Math.min(a, b)));
+    let validalgo = Object.keys(allSteps).filter((key) => allSteps[key] !== "-");
+    let minTime = Math.min(...validalgo.map((key) => allTimes[key]));
     let bestAlgo = Object.keys(allTimes).find((key) => allTimes[key] === minTime);
 
     for (let r = 1; r < rows.length; r++) {
