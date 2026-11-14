@@ -820,6 +820,13 @@ header nav a:hover::before {
     font-size: 1.2rem;
 }
 
+@media (max-width: 767px) {
+    .ans .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+}
 
 .ans .tile-input.tile-empty {
     background-color: var(--tile-empty-bg);
