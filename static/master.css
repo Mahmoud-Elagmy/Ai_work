@@ -868,6 +868,7 @@ header nav a:hover::before {
 
     .ans .container .right {
         font-size: 0.9rem;
+        width: 120%;
     }
 }
 
