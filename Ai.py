@@ -50,12 +50,14 @@ def A_star(curr, goal):
     h = heuristic(curr, goal)
     pq = [(h, curr, [curr], [])]  # store f,node,path,direction
     vis = set()
+    expanded=0
     while pq:
         f, node, path, dirs = heapq.heappop(pq)  # to order the node with least f
         if node == goal:
-            return path, dirs
+            return path, dirs, expanded
         if tuple(node) in vis:  # if two nodes have same state
             continue
+        expanded+=1
         vis.add(tuple(node))
         for state, dir in states(node):
             if tuple(state) not in vis:
@@ -69,12 +71,14 @@ def Greedy(curr, goal):
     h = heuristic(curr, goal)
     pq = [(h, curr, [curr], [])]
     vis = set()
+    expanded=0
     while pq:
         h, node, path, dirs = heapq.heappop(pq)
         if node == goal:
-            return path, dirs
+            return path, dirs, expanded
         if tuple(node) in vis:
             continue
+        expanded+=1
         vis.add(tuple(node))
         for state, dir in states(node):
             if tuple(state) not in vis:
@@ -83,15 +87,16 @@ def Greedy(curr, goal):
     return None
 
 
-def DLS(curr, goal, vis, limit=10, path=[], dirs=[]):
+def DLS(curr, goal, vis, limit=10, path=[], dirs=[],cnt=[]):
     if curr == goal:
-        return path, dirs
+        return path, dirs, cnt
     if limit <= 0:
         return None
     vis.add(tuple(curr))
+    cnt[0]+=1
     for state, dir in states(curr):
         if tuple(state) not in vis:
-            res = DLS(state, goal, vis, limit - 1, path + [state], dirs + [dir])
+            res = DLS(state, goal, vis, limit - 1, path + [state], dirs + [dir],cnt)
             if res:
                 return res
     vis.remove(tuple(curr))
@@ -102,10 +107,12 @@ def bfs(curr, goal):
     vis = set()
     q = deque([(curr, [curr], [])])  # deque O(1)
     vis.add(tuple(curr))
+    expanded=0
     while q:
         node, path, dirs = q.popleft()
+        expanded+=1
         if node == goal:
-            return path, dirs
+            return path, dirs, expanded
         for state, dir in states(node):
             if tuple(state) not in vis:
                 vis.add(tuple(state))
@@ -130,7 +137,7 @@ def solve():
     execution_time2 = round((time.perf_counter() - t2) * 1000, 3)
 
     t3 = time.perf_counter()
-    res_dls = DLS(puzzle, goal, set(), limit, [puzzle], [])
+    res_dls = DLS(puzzle, goal, set(), limit, [puzzle], [], [0])
     execution_time3 = round((time.perf_counter() - t3) * 1000, 3)
 
     t4 = time.perf_counter()
@@ -144,8 +151,15 @@ def solve():
         "DLS": res_dls,
     }
 
+    expanded = {
+        "BFS": res_bfs[2] if res_bfs else "-",
+        "Greedy": res_greedy[2] if res_greedy else "-",
+        "A*": res_astar[2] if res_astar else "-",
+        "DLS": res_dls[2] if res_dls else "-",
+    }
+
     if ans[choice] is not None:
-        path, dirs = ans[choice]
+        path, dirs,_= ans[choice]
         tree=[]
         for idx in range(len(path)-1):
             child=[]
@@ -164,6 +178,7 @@ def solve():
                 "path": path,
                 "dirs": dirs,
                 "op": len(path) - 1,
+                "expanded": expanded,
                 "tree": tree,
                 "steps": {
                     "BFS": len(res_bfs[0])  if res_bfs else "-",

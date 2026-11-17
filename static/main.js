@@ -166,6 +166,7 @@ let allSteps;
 let allTimes;
 let directions;
 let tree;
+let nodes;
 
 async function sendData(choice, depthLimit) {
     try {
@@ -190,6 +191,7 @@ async function sendData(choice, depthLimit) {
             allTimes = Data.execution_time;
             allSteps = Data.steps;
             tree = Data.tree;
+            nodes = Data.expanded;
             return Data.path;
         }
         else {
@@ -326,11 +328,8 @@ solve.addEventListener("click", async (e) => {
     for (let i = 1; i < rows.length; i++) {
         let algoname = rows[i].children[0].innerText;
         rows[i].children[1].innerHTML = allSteps[algoname];
-        if (allSteps[algoname] === "-") {
-            rows[i].children[2].innerText = "-";
-            continue;
-        }
-        rows[i].children[2].innerText = allTimes[algoname] + "ms";
+        rows[i].children[2].innerHTML = nodes[algoname];
+        rows[i].children[3].innerText = allTimes[algoname] + "ms";
     }
 
     let validalgo = Object.keys(allSteps).filter((key) => allSteps[key] !== "-");
@@ -342,7 +341,23 @@ solve.addEventListener("click", async (e) => {
         rows[r].children[0].style.color = (algoName === bestAlgo) ? "var(--accent-soft)" : "";
     }
 
-    workContent.innerHTML = left.children[1].children[1].outerHTML;
+    let div = document.createElement("div");
+    div.style.display = "flex";
+    div.style.flexDirection = "column";
+    div.style.justifyContent = "center";
+    div.style.alignItems = "center";
+    div.style.gap = "10px";
+    div.style.padding = " 0 12px";
+    div.style.borderRadius = "12px";
+    div.style.border = "2px solid var(--accent-soft)";
+    div.appendChild(left.children[1].children[1].cloneNode(true));
+    let levelSpan = document.createElement("span");
+    levelSpan.style.color = "var(--accent-soft)";
+    levelSpan.textContent = "Level: 0";
+    div.appendChild(levelSpan);
+
+    workContent.appendChild(div);
+
 
     for (let i = 0; i < tree.length; ++i) {
         let div = document.createElement("div");
@@ -354,10 +369,13 @@ solve.addEventListener("click", async (e) => {
         for (let j = 0; j < tree[i].length; ++j) {
             if (tree[i][j].level == i) {
                 let div2 = document.createElement("div");
-                div2.classList.add("step-item");
+                div2.style.display = "flex";
+                div2.style.flexDirection = "column";
+                div2.style.justifyContent = "center";
+                div2.style.alignItems = "center";
+                div2.style.gap = "10px";
                 div2.style.padding = " 0 12px";
                 div2.style.borderRadius = "12px";
-
                 if (tree[i][j].goal) {
                     div2.style.border = "2px solid #22c55e"; // Green for Goal
                 } else if (tree[i][j].path) {
@@ -377,6 +395,8 @@ solve.addEventListener("click", async (e) => {
                     <input type="text" class="tile-input" value="${tree[i][j].state[7]}" disabled>
                     <input type="text" class="tile-input" value="${tree[i][j].state[8]}" disabled>
                 </div>
+                <span>${tree[i][j].move}</span>
+                <span style="color: var(--accent-soft)">level: ${tree[i][j].level + 1}</span>
                 `;
                 div.appendChild(div2);
             }

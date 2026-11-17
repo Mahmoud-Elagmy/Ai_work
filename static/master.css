@@ -142,6 +142,12 @@ header {
     padding: 15px;
     margin: 10px auto 0 auto;
     text-align: center;
+    width: 80%;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-nav);
+    position: sticky;
+    top: 0;
+    z-index: 99;
 }
 
 header .container {
@@ -859,6 +865,10 @@ header nav a:hover::before {
     .ans .container .right h3 {
         font-size: 1rem;
     }
+
+    .ans .container .right {
+        font-size: 0.9rem;
+    }
 }
 
 .ans .tile-input.tile-empty {
@@ -965,6 +975,7 @@ header nav a:hover::before {
         align-items: center;
         width: 100%;
     }
+
 }
 
 .work {
