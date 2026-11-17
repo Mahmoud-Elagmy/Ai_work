@@ -263,6 +263,7 @@ solve.addEventListener("click", async (e) => {
     steps.innerHTML = `Step 1 of ${arr.length}`;
     moves.innerHTML = directions.length > 0 ? `Move: ${directions[0]}` : "Goal State";
     type.innerHTML = `${choice}`;
+    workContent.innerHTML = "";
     workh.innerHTML = `${choice}`;
 
     for (let i of arr) {
