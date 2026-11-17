@@ -146,12 +146,25 @@ def solve():
 
     if ans[choice] is not None:
         path, dirs = ans[choice]
+        tree=[]
+        for idx in range(len(path)-1):
+            child=[]
+            for state,dir in states(path[idx]):
+                child.append({
+                    "state": state,
+                    "move":dir,
+                    "path": state==path[idx+1],
+                    "goal": state==goal,
+                    "level":idx
+                })
+            tree.append(child)
         return jsonify(
             {
                 "status": "success",
                 "path": path,
                 "dirs": dirs,
                 "op": len(path) - 1,
+                "tree": tree,
                 "steps": {
                     "BFS": len(res_bfs[0])  if res_bfs else "-",
                     "Greedy": len(res_greedy[0])  if res_greedy else "-",

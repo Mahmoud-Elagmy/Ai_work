@@ -76,6 +76,8 @@ input[type="number"]::-webkit-inner-spin-button {
     /* tile in its goal position */
     --tile-correct-border: rgba(34, 197, 94, 0.70);
     --danger: #ff4111;
+    --danger-bg: rgba(255, 65, 17, 0.10);
+    --danger-border: rgba(255, 65, 17, 0.50);
     /* Clear button hover (you already use this) */
     --focus-ring: var(--accent-soft);
     /* keyboard focus outline */
@@ -542,8 +544,7 @@ header nav a:hover::before {
     border-radius: var(--radius-md);
 }
 
-.search .grid,
-.ans .grid {
+.grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(60px, 90px));
     grid-template-rows: repeat(3, minmax(60px, 90px));
@@ -557,8 +558,7 @@ header nav a:hover::before {
     color: var(--text-muted);
 }
 
-.search .tile-input,
-.ans .tile-input {
+.tile-input {
     width: 100%;
     height: 100%;
     background-color: var(--tile-bg);
@@ -572,15 +572,14 @@ header nav a:hover::before {
 
 @media (max-width: 767px) {
 
-    .search .grid,
-    .ans .grid {
+    .grid {
         grid-template-columns: repeat(3, minmax(40px, 60px));
         grid-template-rows: repeat(3, minmax(40px, 60px));
         gap: 10px;
         margin: 20px auto;
     }
 
-    .ans .tile-input {
+    .tile-input {
         font-size: 1.4rem;
     }
 
@@ -783,6 +782,7 @@ header nav a:hover::before {
     display: none;
     flex-direction: column;
     gap: 20px;
+    height: 100%;
 }
 
 .ans .container .left .data {
@@ -964,5 +964,59 @@ header nav a:hover::before {
         justify-content: center;
         align-items: center;
         width: 100%;
+    }
+}
+
+.work {
+    display: none;
+}
+
+.work .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.work .container h2 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.work .container h3 {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.work .content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+    .work .container h2 {
+        font-size: 1.5rem;
+    }
+
+    .work .container h3 {
+        font-size: 1rem;
+    }
+
+    .work .content {
+        gap: 10px;
+    }
+
+    .work .content div {
+        flex-wrap: wrap;
+        gap: 5px;
     }
 }

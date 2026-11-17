@@ -162,9 +162,10 @@ lis.forEach((li) => {
 })
 
 
-let allSteps = undefined;
-let allTimes = undefined;
-let directions = undefined;
+let allSteps;
+let allTimes;
+let directions;
+let tree;
 
 async function sendData(choice, depthLimit) {
     try {
@@ -185,11 +186,10 @@ async function sendData(choice, depthLimit) {
         }
         let Data = await response.json();
         if (Data.status === "success") {
-            numberOfoperations = Data.op;
-            executionTime = Data.execution_time[choice] + " ms";
             directions = Data.dirs;
             allTimes = Data.execution_time;
             allSteps = Data.steps;
+            tree = Data.tree;
             return Data.path;
         }
         else {
@@ -210,9 +210,14 @@ let solvable = document.querySelector(".options span");
 let left = document.querySelector(".ans .left");
 let steps = document.querySelector(".ans .left .data span:first-child");
 let moves = document.querySelector(".ans .left .data span:last-child");
+let type = document.querySelector(".ans .left .data span:nth-child(2)");
 let right = document.querySelector(".ans .right");
 
 let rows = document.querySelectorAll(".row");
+
+let work = document.querySelector(".work");
+let workh = document.querySelector(".work h3");
+let workContent = document.querySelector(".work .content");
 
 solve.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -223,6 +228,7 @@ solve.addEventListener("click", async (e) => {
     solvable.classList.add("notsolved");
     left.style.display = "none";
     right.style.display = "none";
+    work.style.display = "none";
     if (loading) loading.style.display = "block";
 
     if (ans && ans.children[0]) {
@@ -242,6 +248,7 @@ solve.addEventListener("click", async (e) => {
         solvable.classList.add("notsolved");
         left.style.display = "none";
         right.style.display = "none";
+        work.style.display = "none";
         return;
     }
 
@@ -249,9 +256,12 @@ solve.addEventListener("click", async (e) => {
     solvable.classList.remove("notsolved");
     left.style.display = "flex";
     right.style.display = "flex";
+    work.style.display = "flex";
 
     steps.innerHTML = `Step 1 of ${arr.length}`;
     moves.innerHTML = directions.length > 0 ? `Move: ${directions[0]}` : "Goal State";
+    type.innerHTML = `${choice}`;
+    workh.innerHTML = `${choice}`;
 
     for (let i of arr) {
         let idx = arr.indexOf(i);
@@ -330,6 +340,48 @@ solve.addEventListener("click", async (e) => {
     for (let r = 1; r < rows.length; r++) {
         let algoName = rows[r].children[0].innerText.trim();
         rows[r].children[0].style.color = (algoName === bestAlgo) ? "var(--accent-soft)" : "";
+    }
+
+    workContent.innerHTML = left.children[1].children[1].outerHTML;
+
+    for (let i = 0; i < tree.length; ++i) {
+        let div = document.createElement("div");
+        div.style.display = "flex";
+        div.style.justifyContent = "center";
+        div.style.alignItems = "center";
+        div.style.gap = "20px";
+        div.style.marginBottom = "25px";
+        for (let j = 0; j < tree[i].length; ++j) {
+            if (tree[i][j].level == i) {
+                let div2 = document.createElement("div");
+                div2.classList.add("step-item");
+                div2.style.padding = " 0 12px";
+                div2.style.borderRadius = "12px";
+
+                if (tree[i][j].goal) {
+                    div2.style.border = "2px solid #22c55e"; // Green for Goal
+                } else if (tree[i][j].path) {
+                    div2.style.border = "2px solid var(--accent-soft)"; // Blue for chosen path
+                } else {
+                    div2.style.opacity = "0.55"; // Dim non-chosen branches
+                }
+                div2.innerHTML = `
+                <div class="grid">
+                    <input type="text" class="tile-input" value="${tree[i][j].state[0]}" disabled>
+                    <input type="text" class="tile-input" value="${tree[i][j].state[1]}" disabled>
+                    <input type="text" class="tile-input" value="${tree[i][j].state[2]}" disabled>
+                    <input type="text" class="tile-input" value="${tree[i][j].state[3]}" disabled>
+                    <input type="text" class="tile-input" value="${tree[i][j].state[4]}" disabled>
+                    <input type="text" class="tile-input" value="${tree[i][j].state[5]}" disabled>
+                    <input type="text" class="tile-input" value="${tree[i][j].state[6]}" disabled>
+                    <input type="text" class="tile-input" value="${tree[i][j].state[7]}" disabled>
+                    <input type="text" class="tile-input" value="${tree[i][j].state[8]}" disabled>
+                </div>
+                `;
+                div.appendChild(div2);
+            }
+        }
+        workContent.appendChild(div);
     }
 
     solve.disabled = false;
