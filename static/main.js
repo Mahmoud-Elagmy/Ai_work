@@ -328,7 +328,7 @@ solve.addEventListener("click", async (e) => {
     for (let i = 1; i < rows.length; i++) {
         let algoname = rows[i].children[0].innerText;
         rows[i].children[1].innerHTML = allSteps[algoname];
-        rows[i].children[2].innerHTML = nodes[algoname];
+        rows[i].children[2].innerHTML = Number.isNaN(nodes[algoname]) ? "-" : nodes[algoname];
         rows[i].children[3].innerText = allTimes[algoname] + "ms";
     }
 
